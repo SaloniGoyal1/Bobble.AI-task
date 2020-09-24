@@ -1,16 +1,12 @@
 import React, { Component } from "react";
+import Facebook from "react-facebook-login";
 import "./App.css";
 
-// check that entered email is email or not 
-const emailRegex = RegExp(
-  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
-);
-
-const formValid = ({ formErrors, ...rest }) => {
+const validForm = ({ dataError, ...rest }) => {
   let valid = true;
 
   // validate form errors being empty
-  Object.values(formErrors).forEach(val => {
+  Object.values(dataError).forEach(val => {
     val.length > 0 && (valid = false);
   });
 
@@ -22,6 +18,19 @@ const formValid = ({ formErrors, ...rest }) => {
   return valid;
 };
 
+// check that entered email is email or not 
+const emailRegex = RegExp(
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/
+);
+
+const responseFacebook = (response) => {
+  console.log(response);
+};
+
+const handleSubmit = () => {
+  alert("Thank you for signing up");
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -31,7 +40,7 @@ class App extends Component {
       lastName: null,
       email: null,
       password: null,
-      formErrors: {
+      dataError: {
         firstName: "",
         lastName: "",
         email: "",
@@ -40,101 +49,103 @@ class App extends Component {
     };
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
-
-    if (formValid(this.state)) {
-      console.log(`
-        First Name: ${this.state.firstName}
-        Last Name: ${this.state.lastName}
-        Email: ${this.state.email}
-        Password: ${this.state.password}
-      `);
-    } else {
-      console.error("INVALID Data");
-    }
-  };
-
   handleChange = e => {
     e.preventDefault();
     const { name, value } = e.target;
-    let formErrors = { ...this.state.formErrors };
+    let dataError = { ...this.state.dataError };
 
+    // Basic conditions for input data
     switch (name) {
       case "firstName":
-        formErrors.firstName =
+        dataError.firstName =
           value.length < 3 ? "Minimum 3 characaters required" : "";
         break;
       case "lastName":
-        formErrors.lastName =
+        dataError.lastName =
           value.length < 3 ? "Minimum 3 characaters required" : "";
         break;
       case "email":
-        formErrors.email = emailRegex.test(value)
+        dataError.email = emailRegex.test(value)
           ? ""
           : "Invalid email address";
         break;
       case "password":
-        formErrors.password =
+        dataError.password =
           value.length < 6 ? "minimum 6 characaters required" : "";
         break;
       default:
         break;
     }
 
-    this.setState({ formErrors, [name]: value }, () => console.log(this.state));
+    this.setState({ dataError, [name]: value }, () => console.log(this.state));
   };
 
   render() {
-    const { formErrors } = this.state;
+    const { dataError } = this.state;
 
     return (
       <div className="wrapper">
         <div className="form-wrapper">
           <h4>Sign Up</h4>
           <h1>Create your Account</h1>
-          <form onSubmit={this.handleSubmit} noValidate>
+          <span className="subtext">Lorem ipsum dolor sit amet consectetur adipisicing elit.</span><br/><br/>
+          <Facebook
+            appId="1415095728879794"
+            fields="name,email,picture"
+            callback={responseFacebook}
+            cssClass="btn sign-up-btn"
+          />
+          <p style={{display: "flex",justifyContent: "space-evenly"}}>
+            <hr style={{color: "black",height: ".0001rem", width: "40%",}}/>
+            or
+            <hr style={{color: "black",height: ".0001rem", width: "40%",}}/>
+          </p>
+          {/* Form Start */}
+          <form onSubmit={handleSubmit} action="https://reqres.in" method="POST">
+            {/* First Name */}
             <div className="firstName">
               <input
-                className={formErrors.firstName.length > 0 ? "error" : null}
-                placeholder="First Name" type="text" name="firstName"
-                noValidate onChange={this.handleChange}
+                className={dataError.firstName.length > 0 ? "error" : null}
+                placeholder="First Name" type="text" name="firstName" onChange={this.handleChange}
               />
-              {formErrors.firstName.length > 0 && (
-                <span className="errorMessage">{formErrors.firstName}</span>
+              {dataError.firstName.length > 0 && (
+                <span className="error">{dataError.firstName}</span>
               )}
             </div>
+
+            {/* Last Name */}
             <div className="lastName">
               <input
-                className={formErrors.lastName.length > 0 ? "error" : null}
-                placeholder="Last Name" type="text" name="lastName"
-                noValidate onChange={this.handleChange}
+                className={dataError.lastName.length > 0 ? "error" : null}
+                placeholder="Last Name" type="text" name="lastName" onChange={this.handleChange}
               />
-              {formErrors.lastName.length > 0 && (
-                <span className="errorMessage">{formErrors.lastName}</span>
+              {dataError.lastName.length > 0 && (
+                <span className="error">{dataError.lastName}</span>
               )}
             </div>
+            
+            {/* Email */}
             <div className="email">
               <input
-                className={formErrors.email.length > 0 ? "error" : null}
-                placeholder="Email" type="email" name="email"
-                noValidate onChange={this.handleChange}
+                className={dataError.email.length > 0 ? "error" : null}
+                placeholder="Email" type="email" name="email" onChange={this.handleChange}
               />
-              {formErrors.email.length > 0 && (
-                <span className="errorMessage">{formErrors.email}</span>
+              {dataError.email.length > 0 && (
+                <span className="error">{dataError.email}</span>
               )}
             </div>
+            
+            {/* Password */}
             <div className="password">
               <input
-                className={formErrors.password.length > 0 ? "error" : null}
-                placeholder="Password" type="password" name="password"
-                noValidate onChange={this.handleChange}
+                className={dataError.password.length > 0 ? "error" : null}
+                placeholder="Password" type="password" name="password" onChange={this.handleChange}
               />
-              {formErrors.password.length > 0 && (
-                <span className="errorMessage">{formErrors.password}</span>
+              {dataError.password.length > 0 && (
+                <span className="error">{dataError.password}</span>
               )}
             </div>
-            <div className="createAccount">
+            <div className="signup">
               <small>By clicking Sign Up you agree to our <a href="#">Terms of Use</a> and our <a href="#">Privacy Policy</a></small>
               <button type="submit">SIGN UP</button>
             </div>
