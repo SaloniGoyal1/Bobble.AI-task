@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Facebook from "react-facebook-login";
 import "./App.css";
+import logo from './logo.png';
 
 const validForm = ({ dataError, ...rest }) => {
   let valid = true;
@@ -86,6 +87,7 @@ class App extends Component {
     return (
       <div className="wrapper">
         <div className="form-wrapper">
+        <img src={logo} alt="Logo" />
           <h4>Sign Up</h4>
           <h1>Create your Account</h1>
           <span className="subtext">Lorem ipsum dolor sit amet consectetur adipisicing elit.</span><br/><br/>

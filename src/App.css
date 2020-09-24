@@ -96,3 +96,8 @@ input.error {
 .fa-facebook-square {
   color: #034384;
 }
+img{
+  height: 50px;
+  width: 100px;
+  padding-left: 150px;
+}
